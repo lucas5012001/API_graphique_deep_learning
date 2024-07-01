@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Speech-to-Text</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container input {
+            margin: 20px 0;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>French Speech-to-Text</h1>
+        <input type="file" id="audioInput" accept="audio/mp3">
+        <button onclick="uploadAudio()">Upload and Transcribe</button>
+        <div id="output">
+            <h3>Transcription:</h3>
+            <p id="transcriptionText"></p>
+        </div>
+    </div>
+
+    <script>
+        function uploadAudio() {
+            const input = document.getElementById('audioInput');
+            if (input.files && input.files[0]) {
+                const formData = new FormData();
+                formData.append('audio', input.files[0]);
+
+                fetch('/transcribe', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const transcriptionText = document.getElementById('transcriptionText');
+                    transcriptionText.textContent = data.transcription;
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Please select an audio file to upload.');
+            }
+        }
+    </script>
+</body>
+</html>
